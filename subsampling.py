@@ -6,6 +6,7 @@ prototypes.
 
 import numpy as np
 
+verbose = False
 
 def furthest_first_traversal(dataset, k, distance, permutation=True):
     """This is the farthest first traversal (fft) algorithm which selects
@@ -50,7 +51,7 @@ def furthest_first_traversal(dataset, k, distance, permutation=True):
         idx = np.random.permutation(len(dataset))
         dataset = dataset[idx]
     else:
-        idx = np.arange(len(dataset), dtype=np.int)
+        idx = np.arange(len(dataset), dtype=int)
 
     T = [0]
     while len(T) < k:
@@ -106,9 +107,7 @@ def subset_furthest_first(dataset, k, distance, permutation=True, c=2.0):
     else:
         idx = range(size)
 
-    return idx[furthest_first_traversal(dataset[idx],
-                                        k, distance,
-                                        permutation=False)]
+    return idx[furthest_first_traversal(dataset[idx], k, distance, permutation=False)]
 
 
 def compute_subsample_size(n_clusters, c=2.0):
@@ -127,18 +126,15 @@ def compute_subsample_size(n_clusters, c=2.0):
     return int(max(1, np.ceil(c * n_clusters * np.log(n_clusters))))
 
 
-
-def compute_subset(dataset, distance, num_landmarks,
-                   landmark_policy='sff'):
+def compute_subset(dataset, distance, num_landmarks, landmark_policy="sff"):
     """Wrapper code to dispatch the computation of the subset according to
     the required policy.
     """
-    if landmark_policy == 'random':
+    if landmark_policy == "random":
         landmark_idx = np.random.permutation(len(dataset))[:num_landmarks]
-    elif landmark_policy in ('fft', 'minmax'):
-        landmark_idx = furthest_first_traversal(dataset,
-                                                 num_landmarks, distance)
-    elif landmark_policy == 'sff':
+    elif landmark_policy in ("fft", "minmax"):
+        landmark_idx = furthest_first_traversal(dataset, num_landmarks, distance)
+    elif landmark_policy == "sff":
         landmark_idx = subset_furthest_first(dataset, num_landmarks, distance)
     else:
         if verbose:
@@ -147,5 +143,3 @@ def compute_subset(dataset, distance, num_landmarks,
         raise Exception
 
     return landmark_idx
-
-
